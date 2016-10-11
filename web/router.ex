@@ -19,6 +19,8 @@ defmodule ElixirMedia.Router do
     pipe_through :api
 
     resources "/songs", SongController, only: [:index, :show]
+    resources "/albums", AlbumController, only: [:index, :show]
+    resources "/artists", ArtistController, only: [:index, :show]
   end
 
   scope "/", ElixirMedia do

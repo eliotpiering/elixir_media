@@ -7,4 +7,17 @@ defmodule ElixirMedia.Factory do
       title: "title"
     }
   end
+
+  def artist_factory do
+    %ElixirMedia.Artist{
+      title: "artist title"
+    }
+  end
+
+  def album_factory do
+    %ElixirMedia.Album{
+      title: "album title"
+    }
+  end
+
 end

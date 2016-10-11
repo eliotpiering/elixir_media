@@ -1,7 +1,7 @@
 defmodule ElixirMedia.Artist do
   use ElixirMedia.Web, :model
 
-  schema "artist" do
+  schema "artists" do
     field :title
     has_many :albums, ElixirMedia.Album
 
