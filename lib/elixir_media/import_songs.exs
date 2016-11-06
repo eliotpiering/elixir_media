@@ -2,38 +2,42 @@ defmodule ImportSongs do
 
   #TODO test this
   def import(file_name) do
-    case File.read(file_name) do
-      {_, :eisdir} ->
-
-        IO.inspect("is dir")
-        sub_files = Enum.map(File.ls!(file_name), fn(f) ->
-          Path.join([file_name, f])
+    case File.ls(file_name) do
+      {:ok, sub_files} ->
+        Enum.map(sub_files,  fn(f) ->
+          full_path = Path.join([file_name, f])
+          ImportSongs.import(full_path)
         end)
-        # IO.puts("sub_files is #{IO.inspect sub_files}")
-        Enum.map(sub_files, fn(f) -> ImportSongs.import(f) end)
+      {:error, :enotdir} ->
+        # its a file (hopefully an mp3
+        import_song(file_name)
 
-      {:ok, _} ->
-        # IO.puts("song is #{file_name}")
-        {id3_tag, _} = System.cmd("id3info", [file_name])
-        id3_tags = String.split(id3_tag, "\n")
-        song = Enum.reduce(id3_tags, %{path: file_name}, fn(tag, song) ->
-          extract_tag_and_store(tag, song)
-        end)
+      {:error, error} ->
+        #TODO raise exception this shouldn't happen
+        IO.inspect(error)
+    end
+  end
 
-        case song do
-          %{title: _, artist: _, album: _, year: _, track: _} ->
-            artist_id = find_or_new_artist(song[:artist])
-            album_id = find_or_new_album(song[:album])
-            find_or_new_song(song, artist_id, album_id)
-            IO.inspect(song)
-          _ ->
+  #private methods
+  defp import_song(file_name) do
+    {id3_tag, _} = System.cmd("id3info", [file_name])
+    id3_tags = String.split(id3_tag, "\n")
+    song = Enum.reduce(id3_tags, %{path: file_name}, fn(tag, song) ->
+      extract_tag_and_store(tag, song)
+    end)
 
-            IO.puts("couldn't parse ----- ")
-            IO.inspect(song)
-        end
+    case song do
+      %{title: _, artist: _, album: _, year: _, track: _} ->
+        artist_id = find_or_new_artist(song[:artist])
+        album_id = find_or_new_album(song[:album])
+        find_or_new_song(song, artist_id, album_id)
+        IO.inspect(song)
 
-       _ ->
-       IO.puts("error")
+      _ ->
+
+        #TODO keep track of songs we couldn't parse
+        IO.puts("couldn't parse ----- ")
+        IO.inspect(song)
     end
   end
 
@@ -114,7 +118,6 @@ defmodule ImportSongs do
   end
 
 end
-
 
 ImportSongs.import("/home/eliot/Music/")
 ImportSongs.import("/mnt/music/")
