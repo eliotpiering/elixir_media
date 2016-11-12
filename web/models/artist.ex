@@ -4,6 +4,7 @@ defmodule ElixirMedia.Artist do
   schema "artists" do
     field :title
     has_many :albums, ElixirMedia.Album
+    has_many :songs, ElixirMedia.Song
 
     timestamps
   end

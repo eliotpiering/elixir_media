@@ -38,5 +38,9 @@ defmodule ElixirMedia.Endpoint do
     key: "_elixir_media_key",
     signing_salt: "OQp8QZQp"
 
+  # CORS
+  plug CORSPlug, origin: ["*"]
+
   plug ElixirMedia.Router
 end
+

@@ -3,7 +3,7 @@ defmodule ElixirMedia.SongView do
 
   def render("index.json", %{songs: songs}) do
     %{
-      songs: Enum.map(songs, &song_json/1)
+      songs: songs_json(songs)
     }
   end
 
@@ -13,12 +13,18 @@ defmodule ElixirMedia.SongView do
     }
   end
 
+  def songs_json(songs) do
+    Enum.map(songs, &song_json/1)
+  end
+
   def song_json(song) do
     %{
+      id: song.id,
       path: song.path,
       title: song.title,
-      inserted_at: song.inserted_at,
-      updated_at: song.updated_at
+      album: song.album.title,
+      artist: song.artist.title,
+      track: song.track
     }
   end
 end

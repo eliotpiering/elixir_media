@@ -4,7 +4,8 @@ defmodule ElixirMedia.AlbumController do
   alias ElixirMedia.Album
 
   def index(conn, _params) do
-    albums = Repo.all(Album)
+    query = from a in Album, preload: [songs: [:artist, :album]]
+    albums = Repo.all query
     render conn, "index.json", albums: albums
   end
 

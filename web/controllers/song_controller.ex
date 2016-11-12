@@ -4,12 +4,15 @@ defmodule ElixirMedia.SongController do
   alias ElixirMedia.Song
 
   def index(conn, _params) do
-    songs = Repo.all(Song)
+    #TODO figure out preloading and just getting the artist album name b/c thats all we need
+    query = from s in Song, preload: [:album, :artist], limit: 1000
+    songs = Repo.all query
     render conn, "index.json", songs: songs
   end
 
   def show(conn, %{"id" => id}) do
-    song= Repo.get!(Song, id)
+    query = from s in Song, where: [id: ^id], preload: [:album, :artist]
+    song = (Repo.all query) |> List.first
     render(conn, "show.json", song: song)
   end
 

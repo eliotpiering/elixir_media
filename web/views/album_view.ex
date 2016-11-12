@@ -16,8 +16,7 @@ defmodule ElixirMedia.AlbumView do
   def album_json(album) do
     %{
       title: album.title,
-      inserted_at: album.inserted_at,
-      updated_at: album.updated_at
+      songs: ElixirMedia.SongView.songs_json(album.songs),
     }
   end
 end
