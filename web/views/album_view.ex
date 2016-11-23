@@ -13,10 +13,18 @@ defmodule ElixirMedia.AlbumView do
     }
   end
 
+  def render("songs.json", %{album: album}) do
+    %{
+      songs: ElixirMedia.SongView.songs_json(album.songs),
+    }
+  end
+
   def album_json(album) do
     %{
+      id: album.id,
+      kind: "albums",
       title: album.title,
-      songs: ElixirMedia.SongView.songs_json(album.songs),
+      songs: []
     }
   end
 end
